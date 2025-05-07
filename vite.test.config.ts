@@ -7,22 +7,20 @@ import UnoCSS from 'unocss/vite'
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const isDev = process.env.NODE_ENV === "development";
-
 // https://vite.dev/config/
 export default defineConfig({
-  base: isDev ? "/" : "/api-request-builder/",
+  base: "/",
   plugins: [
     vue(),
     UnoCSS(),
   ],
-  root: "dev",
+  root: "test",
   build: {
     outDir: "../docs",
     rollupOptions: {
       input: {
-        main: resolve(__dirname, "dev/index.html"),
+        main: resolve(__dirname, "test/index.html"),
       },
     },
   },
-});
+}); 

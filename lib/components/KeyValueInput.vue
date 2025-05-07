@@ -41,7 +41,6 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { Modal } from 'ant-design-vue';
 
 interface KeyValueItem {
   key: string;

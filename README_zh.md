@@ -1,23 +1,23 @@
-# API Request Builder
+# API 请求构建器
 
-A Vue 3 component for building and testing API requests with a beautiful UI.
+一个用于构建和测试 API 请求的 Vue 3 组件，具有美观的用户界面。
 
 # Start of Selection
-[中文文档](README_zh.md)
+[English Documentation](README.md)
 
-## Installation
+## 安装
 
 ```bash
 npm install vue-api-request-builder
-# or
+# 或
 yarn add vue-api-request-builder
-# or
+# 或
 pnpm add vue-api-request-builder
 ```
 
-## Usage
+## 使用方法
 
-### Basic Usage
+### 基础用法
 
 ```vue
 <template>
@@ -37,7 +37,7 @@ const handleSchemaChange = (newSchema: RequestSchema) => {
 </script>
 ```
 
-### Advanced Usage with Preview
+### 高级用法
 
 ```vue
 <template>
@@ -48,7 +48,7 @@ const handleSchemaChange = (newSchema: RequestSchema) => {
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { RequestForm, ResponseSection, type RequestSchema, defaultRequestSchema } from 'vue-api-request-builder';
 
 const requestSchema = ref<RequestSchema>(defaultRequestSchema);
@@ -59,63 +59,63 @@ const handleSchemaChange = (newSchema: RequestSchema) => {
 </script>
 ```
 
-## Components
+## 组件
 
 ### RequestForm
 
-The main component for building API requests. It provides a form interface for configuring:
+用于构建 API 请求的主要组件。它提供了一个表单界面来配置：
 
-#### Props
-- `modelValue` (RequestSchema): The request schema object (v-model)
+#### 属性
+- `modelValue` (RequestSchema): 请求模式对象 (v-model)
 
-#### Events
-- `update:modelValue`: Emitted when the schema changes
+#### 事件
+- `update:modelValue`: 当模式发生变化时触发
 
-#### Features
-- HTTP method selection (GET, POST, PUT, DELETE, OPTIONS)
-- URL configuration with base URL and path
-- URL parameters management
-- Authentication options:
-  - None
-  - Basic Auth
-  - Bearer Token
-- Custom headers
-- Request body support for:
+#### 功能
+- HTTP 方法选择 (GET, POST, PUT, DELETE, OPTIONS)
+- URL 配置（基础 URL 和路径）
+- URL 参数管理
+- 认证选项：
+  - 无认证
+  - Basic 认证
+  - Bearer Token 认证
+- 自定义请求头
+- 请求体支持：
   - JSON
   - Form Data
-  - Raw text
-- Live preview of request URL and body
+  - 原始文本
+- 请求 URL 和请求体的实时预览
 
 ### ResponseSection
 
-Displays the response from the API request.
+显示 API 请求的响应结果。
 
-#### Props
-- `modelValue` (RequestSchema): The request schema object (v-model)
+#### 属性
+- `modelValue` (RequestSchema): 请求模式对象 (v-model)
 
-#### Features
-- Request method selection (XMLHttpRequest/Fetch)
-- Response display:
-  - Status code with color coding
-  - Response time
-  - Response headers
-  - Response body with formatting
-- Error handling and display
+#### 功能
+- 请求方法选择 (XMLHttpRequest/Fetch)
+- 响应显示：
+  - 状态码（带颜色标识）
+  - 响应时间
+  - 响应头
+  - 响应体（带格式化）
+- 错误处理和显示
 
 ### KeyValueInput
 
-A reusable component for managing key-value pairs.
+用于管理键值对的可复用组件。
 
-#### Props
-- `modelValue` (KeyValuePair[]): Array of key-value pairs (v-model)
-- `addButtonText` (string): Text for the add button
-- `showPreview` (boolean): Whether to show the preview
-- `previewText` (string): Text to show in preview
+#### 属性
+- `modelValue` (KeyValuePair[]): 键值对数组 (v-model)
+- `addButtonText` (string): 添加按钮的文本
+- `showPreview` (boolean): 是否显示预览
+- `previewText` (string): 预览中显示的文本
 
-#### Events
-- `update:modelValue`: Emitted when the key-value pairs change
+#### 事件
+- `update:modelValue`: 当键值对发生变化时触发
 
-## Types
+## 类型定义
 
 ### RequestSchema
 
@@ -164,7 +164,7 @@ interface ResponseData {
 }
 ```
 
-## Utilities
+## 工具函数
 
 ### executeRequest
 
@@ -175,14 +175,14 @@ function executeRequest(
 ): Promise<ResponseData>
 ```
 
-Executes the API request using either Fetch API or XMLHttpRequest.
+使用 Fetch API 或 XMLHttpRequest 执行 API 请求。
 
-## Dependencies
+## 依赖项
 
-This package requires:
+本包需要：
 - Vue 3.x
 - Ant Design Vue 4.x
 
-## License
+## 许可证
 
-MIT
+MIT 

@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import {
-  RequestForm,
-  ResponseSection,
-  type RequestSchema,
-  defaultRequestSchema,
-} from "vue-api-request-builder";
-import "vue-api-request-builder/dist/index.css";
+import RequestForm from "../lib/components/RequestForm.vue";
+import ResponseSection from "../lib/components/ResponseSection.vue";
+import type { RequestSchema } from "../lib/types/request";
+import { defaultRequestSchema } from "../lib/types/request";
 
 const requestSchema = ref<RequestSchema>(defaultRequestSchema);
 const previewContent = ref(JSON.stringify(requestSchema.value, null, 2));
