@@ -11,7 +11,7 @@ export default defineConfig({
   plugins: [vue()],
   root: "test",
   build: {
-    outDir: "../dist-static",
+    outDir: "../docs",
     rollupOptions: {
       input: {
         main: resolve(__dirname, "test/index.html"),
