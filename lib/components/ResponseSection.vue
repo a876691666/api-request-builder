@@ -16,38 +16,31 @@
       style="margin-bottom: 8px"
     />
 
-    <div class="response-section">
-      <div class="section-title">基本信息</div>
-      <a-descriptions>
-        <a-descriptions-item label="状态码">
-          <a-tag :color="getStatusColor(response.status)">
-            {{ response.status }}
-          </a-tag>
-        </a-descriptions-item>
-        <a-descriptions-item label="耗时">
-          {{ response.timing ? `${response.timing}ms` : "-" }}
-        </a-descriptions-item>
-      </a-descriptions>
-    </div>
-
-    <div class="response-section">
-      <div class="section-title">响应头</div>
+    <div class="flex flex-col gap-2">
+      <div class="text-sm font-bold">基本信息</div>
+      <div class="flex flex-col gap-1">
+        <div>
+          <span>状态码:</span>
+          <a-tag :color="getStatusColor(response.status)">{{ response.status }}</a-tag>
+        </div>
+        <div>
+          <span>耗时:</span>
+          <span>{{ response.timing ? `${response.timing}ms` : "-" }}</span>
+        </div>
+      </div>
+      <div class="text-sm font-bold">响应头</div>
       <template v-if="Object.keys(response.headers).length > 0">
-        <a-table
-          :columns="[
-            { title: '响应头', dataIndex: 'key', width: '30%' },
-            { title: '值', dataIndex: 'value' },
-          ]"
-          :data-source="Object.entries(response.headers).map(([key, value]) => ({ key, value }))"
-          :pagination="false"
-          size="small"
-        />
+        <table class="border border-solid border-gray-300 w-full">
+          <tbody>
+            <tr v-for="[key, value] in Object.entries(response.headers)" :key="key">
+              <td class="border border-gray-300">{{ key }}</td>
+              <td class="border border-gray-300">{{ value }}</td>
+            </tr>
+          </tbody>
+        </table>
       </template>
       <p v-else>无响应头</p>
-    </div>
-
-    <div class="response-section">
-      <div class="section-title">响应体</div>
+      <div class="text-sm font-bold">响应体</div>
       <a-textarea
         v-model:value="response.body"
         :rows="5"
@@ -117,7 +110,6 @@ const sendRequest = async () => {
 <style scoped>
 .form-section {
   margin-bottom: 8px;
-  width: 100%;
 }
 
 .response-section {

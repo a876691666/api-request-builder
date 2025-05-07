@@ -344,8 +344,7 @@ const canParseUrl = computed(() => {
 
 <style scoped>
 .request-form {
-  width: 100%;
-  margin: 0 auto;
+  margin: 0;
   padding: 0px;
 }
 

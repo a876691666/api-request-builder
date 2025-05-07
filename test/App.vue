@@ -35,8 +35,20 @@ watch(
 </script>
 
 <template>
-  <div class="app-container">
-    <div class="preview-container">
+  <div class="flex w-full h-full justify-center items-center gap-4 py-10">
+    <RequestForm
+      class="w-360px min-w-360px"
+      v-model="requestSchema"
+      @update:modelValue="handleSchemaChange"
+    />
+
+    <div class="text-sm text-center nowrap">
+      转换 >
+      <br />
+      {{`<RequestForm v-model="schame" />`}}
+    </div>
+
+    <div class="w-360px min-w-360px">
       <textarea
         v-model="previewContent"
         @input="handlePreviewChange"
@@ -45,8 +57,13 @@ watch(
       ></textarea>
     </div>
 
-    <RequestForm v-model="requestSchema" @update:modelValue="handleSchemaChange" />
-    <ResponseSection v-model="requestSchema" />
+    <div class="text-sm text-center nowrap">
+      调用 >
+      <br />
+      executeRequest(schame.value)
+    </div>
+
+    <ResponseSection class="w-360px min-w-360px" v-model="requestSchema" />
   </div>
 </template>
 
