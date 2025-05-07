@@ -1,52 +1,22 @@
 {
   "name": "api-request-builder",
-  "version": "1.0.0",
-  "description": "A playground for XMLHttpRequests",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "lint": "eslint --ext .js,.vue src",
-    "fix:lint": "eslint --ext .js,.vue src --fix",
-    "test": "npm run lint -s",
-    "start": "parcel src/index.html",
-    "build": "parcel build --public-url . src/index.html",
-    "clean": "rm -rf .cache dist",
-    "predeploy": "npm run clean -s && npm run build -s",
-    "deploy": "gh-pages -d dist"
+    "dev": "vite",
+    "build": "vue-tsc -b && vite build",
+    "preview": "vite preview"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/terabaud/api-request-builder.git"
-  },
-  "keywords": [
-    "api",
-    "tool"
-  ],
-  "author": "Lea Rosema",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/terabaud/api-request-builder/issues"
-  },
-  "homepage": "https://github.com/terabaud/api-request-builder#readme",
   "dependencies": {
-    "vue": "^2.6.11",
-    "vue-hot-reload-api": "^2.3.4"
+    "ant-design-vue": "4.x",
+    "vue": "^3.5.13"
   },
   "devDependencies": {
-    "@vue/component-compiler-utils": "^3.2.0",
-    "autoprefixer": "^9.8.5",
-    "babel-core": "^6.26.3",
-    "babel-preset-env": "^1.7.0",
-    "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^6.2.2",
-    "gh-pages": "^3.1.0",
-    "husky": "^4.2.5",
-    "parcel-bundler": "^1.12.4",
-    "prettier": "^2.0.5",
-    "pretty-quick": "^2.0.1",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
+    "@vitejs/plugin-vue": "^5.2.3",
+    "@vue/tsconfig": "^0.7.0",
+    "typescript": "~5.8.3",
+    "vite": "^6.3.5",
+    "vue-tsc": "^2.2.8"
   }
 }
