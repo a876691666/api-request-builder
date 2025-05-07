@@ -4,7 +4,12 @@
       <!-- 请求部分 -->
       <a-card title="URL配置" class="form-section" size="small">
         <div class="flex flex-col gap-1">
-          <a-input v-model:value="url" placeholder="基础URL" size="small" />
+          <div class="flex flex-row gap-1">
+            <a-input v-model:value="url" placeholder="基础URL" size="small" />
+            <a-button v-if="canParseUrl" type="primary" size="small" @click="parseUrl"
+              >拆解</a-button
+            >
+          </div>
           <div class="flex flex-row gap-1">
             <a-select v-model:value="method" class="w-40" size="small">
               <a-select-option value="GET">GET</a-select-option>
@@ -76,24 +81,20 @@
         class="form-section"
         size="small"
       >
-        <a-form-item label="内容类型">
-          <a-radio-group v-model:value="contentType" button-style="solid" size="small">
-            <a-radio-button value="application/json">JSON</a-radio-button>
-            <a-radio-button value="multipart/form-data">Form Data</a-radio-button>
-            <a-radio-button value="text/plain">Raw</a-radio-button>
-          </a-radio-group>
-        </a-form-item>
+        <a-radio-group v-model:value="contentType" button-style="solid" size="small" class="mb-1">
+          <a-radio-button value="application/json">JSON</a-radio-button>
+          <a-radio-button value="multipart/form-data">Form Data</a-radio-button>
+          <a-radio-button value="text/plain">Raw</a-radio-button>
+        </a-radio-group>
 
         <!-- JSON 输入 -->
         <template v-if="contentType === 'application/json'">
-          <a-form-item label="JSON 数据">
-            <a-textarea
-              v-model:value="jsonBody"
-              :rows="6"
-              placeholder="请输入 JSON 数据"
-              @input="handleJsonInput"
-            />
-          </a-form-item>
+          <a-textarea
+            v-model:value="jsonBody"
+            :rows="6"
+            placeholder="请输入 JSON 数据"
+            @input="handleJsonInput"
+          />
           <a-alert
             v-if="jsonError"
             type="error"
@@ -114,15 +115,11 @@
 
         <!-- Raw 输入 -->
         <template v-if="contentType === 'text/plain'">
-          <a-form-item label="原始数据">
-            <a-textarea v-model:value="rawBody" :rows="6" placeholder="请输入原始数据" />
-          </a-form-item>
+          <a-textarea v-model:value="rawBody" :rows="6" placeholder="请输入原始数据" />
         </template>
 
         <!-- 预览部分 -->
-        <a-form-item label="预览">
-          <pre>{{ requestBodyPreview }}</pre>
-        </a-form-item>
+        <pre>{{ requestBodyPreview }}</pre>
       </a-card>
     </a-form>
   </div>
@@ -271,6 +268,9 @@ const requestBodyPreview = computed(() => {
   switch (contentType.value) {
     case "application/json":
       try {
+        if (!jsonBody.value) {
+          return "-空-";
+        }
         return JSON.stringify(JSON.parse(jsonBody.value), null, 2);
       } catch (e) {
         return "Invalid JSON";
@@ -286,9 +286,9 @@ const requestBodyPreview = computed(() => {
         .join("");
       return formData + `--${boundary}--\r\n`;
     case "text/plain":
-      return rawBody.value;
+      return rawBody.value || "-空-";
     default:
-      return "";
+      return "-空-";
   }
 });
 
@@ -302,6 +302,44 @@ const handleJsonInput = () => {
     jsonError.value = "Invalid JSON format";
   }
 };
+
+const parseUrl = () => {
+  try {
+    const fullUrl = url.value;
+    const urlObj = new URL(fullUrl);
+
+    // 设置基础URL
+    url.value = `${urlObj.protocol}//${urlObj.host}`;
+
+    // 设置路径
+    path.value = urlObj.pathname;
+
+    // 解析查询参数
+    const searchParams = new URLSearchParams(urlObj.search);
+    const newParams: KeyValuePair[] = [];
+    searchParams.forEach((value, key) => {
+      newParams.push({ key, value });
+    });
+    params.value = newParams;
+  } catch (error) {
+    // 如果URL解析失败，显示错误提示
+    console.error("URL解析失败:", error);
+  }
+};
+
+const canParseUrl = computed(() => {
+  if (!url.value) return false;
+
+  try {
+    const fullUrl = url.value;
+    const urlObj = new URL(fullUrl);
+
+    // 检查是否有查询参数或路径
+    return urlObj.search !== "" || urlObj.pathname !== "/";
+  } catch {
+    return false;
+  }
+});
 </script>
 
 <style scoped>

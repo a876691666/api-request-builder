@@ -25,7 +25,7 @@
           </a-tag>
         </a-descriptions-item>
         <a-descriptions-item label="耗时">
-          {{ response.timing ? `${response.timing}ms` : '-' }}
+          {{ response.timing ? `${response.timing}ms` : "-" }}
         </a-descriptions-item>
       </a-descriptions>
     </div>
@@ -81,39 +81,18 @@ const errorMessage = ref<string>("");
 
 const getStatusColor = (status: string | number): string => {
   const statusNum = Number(status);
-  if (statusNum >= 200 && statusNum < 300) return 'success';
-  if (statusNum >= 300 && statusNum < 400) return 'warning';
-  if (statusNum >= 400 && statusNum < 500) return 'error';
-  if (statusNum >= 500) return 'error';
-  return 'default';
+  if (statusNum >= 200 && statusNum < 300) return "success";
+  if (statusNum >= 300 && statusNum < 400) return "warning";
+  if (statusNum >= 400 && statusNum < 500) return "error";
+  if (statusNum >= 500) return "error";
+  return "default";
 };
 
 const getErrorMessage = (error: unknown): string => {
   if (error instanceof Error) {
-    const message = error.message.toLowerCase();
-    
-    // 处理跨域错误
-    if (message.includes('cors') || message.includes('cross-origin')) {
-      return '跨域请求被阻止。可能的原因：\n' +
-             '1. 目标服务器未设置正确的 CORS 响应头\n' +
-             '2. 请求的域名不在允许列表中\n' +
-             '3. 请求方法或请求头不被允许\n\n' +
-             '建议：\n' +
-             '1. 检查目标服务器的 CORS 配置\n' +
-             '2. 确保请求的域名在服务器的允许列表中\n' +
-             '3. 如果是开发环境，可以考虑使用代理服务器';
-    }
-    
-    // 处理网络错误
-    if (message.includes('network') || message.includes('failed to fetch')) {
-      return '网络请求失败。可能的原因：\n' +
-             '1. 网络连接不稳定\n' +
-             '2. 目标服务器未响应\n' +
-             '3. 请求超时';
-    }
-
     return error.message;
   }
+
   return "请求失败";
 };
 
@@ -170,4 +149,4 @@ const sendRequest = async () => {
 :deep(.ant-descriptions-item-label) {
   font-weight: 500;
 }
-</style> 
+</style>

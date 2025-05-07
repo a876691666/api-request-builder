@@ -1,8 +1,21 @@
 <template>
   <div class="key-value-input flex flex-col gap-1">
-    <a-button type="primary" @click="addItem" class="w-40 max-w-full" size="small">
-      {{ addButtonText }}
-    </a-button>
+    <div class="flex gap-2">
+      <a-button type="primary" @click="addItem" class="w-40 max-w-full" size="small">
+        {{ addButtonText }}
+      </a-button>
+      <a-popconfirm
+        title="确认清空"
+        description="确定要清空所有参数吗？"
+        ok-text="确认"
+        cancel-text="取消"
+        @confirm="clearItems"
+      >
+        <a-button type="primary" danger class="w-40 max-w-full" size="small" :disabled="items.length === 0">
+          清空
+        </a-button>
+      </a-popconfirm>
+    </div>
 
     <template v-if="items.length > 0">
       <div class="flex flex-col gap-1">
@@ -28,6 +41,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from "vue";
+import { Modal } from 'ant-design-vue';
 
 interface KeyValueItem {
   key: string;
@@ -74,6 +88,10 @@ const addItem = () => {
 
 const removeItem = (index: number) => {
   items.value.splice(index, 1);
+};
+
+const clearItems = () => {
+  items.value = [];
 };
 </script>
 
