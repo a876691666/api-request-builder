@@ -1,17 +1,18 @@
 <template>
   <div class="key-value-input flex flex-col gap-1">
     <div class="flex gap-2">
-      <a-button type="primary" @click="addItem" class="w-40 max-w-full" size="small">
+      <a-button type="primary" @click="addItem" class="w-full max-w-50%" size="small">
         {{ addButtonText }}
       </a-button>
       <a-popconfirm
+        class="w-full max-w-50%"
         title="确认清空"
         description="确定要清空所有参数吗？"
         ok-text="确认"
         cancel-text="取消"
         @confirm="clearItems"
       >
-        <a-button type="primary" danger class="w-40 max-w-full" size="small" :disabled="items.length === 0">
+        <a-button type="primary" danger size="small" class="w-full" :disabled="items.length === 0">
           清空
         </a-button>
       </a-popconfirm>

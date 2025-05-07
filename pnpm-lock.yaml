@@ -15,8 +15,8 @@ importers:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
       vue-api-request-builder:
-        specifier: ^0.2.1
-        version: 0.2.1(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
+        specifier: ^0.2.2
+        version: 0.2.2(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
@@ -1143,8 +1143,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-api-request-builder@0.2.1:
-    resolution: {integrity: sha512-Ne5xyQX9nyiyNh1c343Urp2HBGE2AKySNerxMUOpG/7tsSQoMOnMLO1M3f1hQc7vd2XaAU621BytJ+xPRxo4gg==}
+  vue-api-request-builder@0.2.2:
+    resolution: {integrity: sha512-QQdfejZ1GGFDqpIy1Yi9jRrLakBVSaB4I02v2VBaRCR+RmkPbP8Lex480cZ2ImJUCgPUL9DkbrDEjWPn/EuXOg==}
     peerDependencies:
       ant-design-vue: ^4.0.0
       vue: ^3.0.0
@@ -2273,7 +2273,7 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-api-request-builder@0.2.1(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)):
+  vue-api-request-builder@0.2.2(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)):
     dependencies:
       ant-design-vue: 4.2.6(vue@3.5.13(typescript@5.8.3))
       vue: 3.5.13(typescript@5.8.3)

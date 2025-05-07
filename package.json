@@ -1,6 +1,6 @@
 {
   "name": "vue-api-request-builder",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",
@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "vite",
     "test": "vite --config vite.test.config.ts",
+    "build:all": "npm run build && npm run build:static",
     "build": "vue-tsc -b && vite build --config vite.lib.config.ts",
     "build:static": "vue-tsc -b && vite build",
     "preview": "vite preview"
@@ -22,7 +23,7 @@
   "dependencies": {
     "ant-design-vue": "4.x",
     "vue": "^3.5.13",
-    "vue-api-request-builder": "^0.2.1"
+    "vue-api-request-builder": "^0.2.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
