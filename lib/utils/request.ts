@@ -37,6 +37,8 @@ async function executeFetchRequest(schema: RequestSchema): Promise<ResponseData>
   if (schema.auth.type === 'Basic' && schema.auth.username && schema.auth.password) {
     const auth = btoa(`${schema.auth.username}:${schema.auth.password}`);
     headers.append('Authorization', `Basic ${auth}`);
+  } else if (schema.auth.type === 'Bearer' && schema.auth.token) {
+    headers.append('Authorization', `Bearer ${schema.auth.token}`);
   }
 
   // Handle request body for POST/PUT methods
@@ -113,6 +115,11 @@ async function executeXHRRequest(schema: RequestSchema): Promise<ResponseData> {
         xhr.setRequestHeader(header.key, header.value);
       }
     });
+
+    // Add Bearer token if present
+    if (schema.auth.type === 'Bearer' && schema.auth.token) {
+      xhr.setRequestHeader('Authorization', `Bearer ${schema.auth.token}`);
+    }
 
     // Handle request body for POST/PUT methods
     if (schema.method === 'POST' || schema.method === 'PUT') {

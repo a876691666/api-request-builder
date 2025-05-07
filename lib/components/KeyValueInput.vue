@@ -1,40 +1,25 @@
 <template>
-  <div class="key-value-input">
-    <a-button type="primary" @click="addItem" style="width: 100%; margin-bottom: 8px" size="small">
+  <div class="key-value-input flex flex-col gap-1">
+    <a-button type="primary" @click="addItem" class="w-40 max-w-full" size="small">
       {{ addButtonText }}
     </a-button>
 
     <template v-if="items.length > 0">
-      <a-list :data-source="items" :bordered="false" size="small" style="margin-bottom: 8px">
-        <template #renderItem="{ item, index }">
-          <a-list-item style="padding: 4px 0">
-            <a-space style="width: 100%">
-              <a-input v-model:value="item.key" placeholder="键" style="width: 100%" size="small" />
-              <a-input
-                v-model:value="item.value"
-                placeholder="值"
-                style="width: 100%"
-                size="small"
-              />
-              <a-button
-                type="primary"
-                danger
-                @click="removeItem(index)"
-                style="width: 80px"
-                size="small"
-                >删除</a-button
-              >
-            </a-space>
-          </a-list-item>
-        </template>
-      </a-list>
-    </template>
-    <template v-else>
-      <div class="empty-state">未设置</div>
+      <div class="flex flex-col gap-1">
+        <div v-for="(item, index) in items" :key="index" class="flex">
+          <div class="flex w-full gap-1 items-center">
+            <a-button type="primary" danger @click="removeItem(index)" class="w-16" size="small">
+              删除
+            </a-button>
+            <a-input v-model:value="item.key" placeholder="键" style="width: 60%" size="small" />
+            <a-input v-model:value="item.value" placeholder="值" style="width: 100%" size="small" />
+          </div>
+        </div>
+      </div>
     </template>
 
-    <a-typography v-if="showPreview">
-      <a-typography-paragraph>
+    <a-typography v-if="showPreview" class="m-0">
+      <a-typography-paragraph class="!m-0">
         <pre>{{ previewText }}</pre>
       </a-typography-paragraph>
     </a-typography>
@@ -101,15 +86,42 @@ const removeItem = (index: number) => {
   color: #999;
   text-align: center;
   padding: 8px 0;
-  font-size: 14px;
 }
 
-pre {
+.key-value-input :deep(.ant-typography pre) {
+  background-color: #f5f5f5;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 0;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.key-value-input :deep(.ant-space-item) {
+  flex: 1;
+}
+
+.key-value-input :deep(.ant-space-item:first-child) {
+  flex: 0 0 100px;
+}
+
+.key-value-input :deep(.ant-space-item:nth-child(2)) {
+  flex: 0 0 200px;
+}
+
+.key-value-input :deep(.ant-list-item) {
+  padding: 4px 0;
+}
+
+:deep(.ant-typography pre) {
   background-color: #f5f5f5;
   padding: 8px;
   border-radius: 4px;
   margin: 0;
   width: 100%;
   overflow-x: auto;
+  max-height: 60px;
+  font-size: 12px;
+  line-height: 1.5;
 }
 </style>

@@ -6,9 +6,10 @@ export interface KeyValuePair {
 
 // 认证相关类型
 export interface AuthConfig {
-  type: 'none' | 'Basic';
+  type: 'none' | 'Basic' | 'Bearer';
   username?: string;
   password?: string;
+  token?: string;
 }
 
 // 请求体类型
@@ -50,5 +51,5 @@ export const defaultRequestSchema: RequestSchema = {
   headers: [],
   body: {
     type: 'application/json'
-  }
-}; 
+  },
+};

@@ -52,7 +52,7 @@ watch(
 
 <style scoped>
 .app-container {
-  max-width: 1200px;
+  max-width: 360px;
   margin: 0 auto;
   padding: 10px;
 }

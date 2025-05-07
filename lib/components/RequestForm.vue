@@ -2,46 +2,65 @@
   <div class="request-form">
     <a-form layout="vertical">
       <!-- 请求部分 -->
-      <a-card title="请求" class="form-section" size="small">
-        <a-space>
-          <a-select v-model:value="method" style="width: 100px" size="small">
-            <a-select-option value="GET">GET</a-select-option>
-            <a-select-option value="POST">POST</a-select-option>
-            <a-select-option value="PUT">PUT</a-select-option>
-            <a-select-option value="DELETE">DELETE</a-select-option>
-            <a-select-option value="OPTIONS">OPTIONS</a-select-option>
-          </a-select>
-          <a-input v-model:value="url" placeholder="基础URL" style="width: 100%" size="small" />
-          <a-input v-model:value="path" placeholder="路径" style="width: 200px" size="small" />
-        </a-space>
-      </a-card>
+      <a-card title="URL配置" class="form-section" size="small">
+        <div class="flex flex-col gap-1">
+          <a-input v-model:value="url" placeholder="基础URL" size="small" />
+          <div class="flex flex-row gap-1">
+            <a-select v-model:value="method" class="w-40" size="small">
+              <a-select-option value="GET">GET</a-select-option>
+              <a-select-option value="POST">POST</a-select-option>
+              <a-select-option value="PUT">PUT</a-select-option>
+              <a-select-option value="DELETE">DELETE</a-select-option>
+              <a-select-option value="OPTIONS">OPTIONS</a-select-option>
+            </a-select>
+            <a-input v-model:value="path" placeholder="路径" size="small" />
+          </div>
+        </div>
 
-      <!-- 请求参数部分 -->
-      <a-card title="URL参数拼接" class="form-section" size="small">
-        <KeyValueInput
-          v-model="params"
-          add-button-text="添加参数"
-          :show-preview="true"
-          :preview-text="url + path + queryString"
-        />
+        <!-- URL参数拼接部分 -->
+        <div class="mt-1">
+          <KeyValueInput
+            v-model="params"
+            add-button-text="添加参数"
+            :show-preview="true"
+            :preview-text="url + path + queryString"
+          />
+        </div>
       </a-card>
 
       <!-- 认证部分 -->
-      <a-card title="认证" class="form-section" size="small">
-        <a-form-item label="认证类型">
-          <a-select v-model:value="auth" style="width: 100%" size="small">
-            <a-select-option value="none">无</a-select-option>
-            <a-select-option value="Basic">Basic认证</a-select-option>
-          </a-select>
-        </a-form-item>
+      <a-card title="认证方案" class="form-section" size="small">
+        <a-radio-group v-model:value="auth" button-style="solid" size="small">
+          <a-radio-button value="none">无认证</a-radio-button>
+          <a-radio-button value="Basic">Basic认证</a-radio-button>
+          <a-radio-button value="Bearer">Bearer认证</a-radio-button>
+        </a-radio-group>
 
         <template v-if="auth === 'Basic'">
-          <a-form-item label="用户名">
-            <a-input v-model:value="httpUser" size="small" />
-          </a-form-item>
-          <a-form-item label="密码">
-            <a-input-password v-model:value="httpPassword" size="small" />
-          </a-form-item>
+          <div class="flex flex-col gap-1 mt-2">
+            <div class="flex flex-row gap-1 h-6">
+              <p class="m-0 w-16">用户名</p>
+              <a-input v-model:value="httpUser" size="small" />
+            </div>
+            <div class="flex flex-row gap-1">
+              <p class="m-0 w-16">密码</p>
+              <a-input-password v-model:value="httpPassword" size="small" />
+            </div>
+          </div>
+        </template>
+        <template v-if="auth === 'Bearer'">
+          <div class="flex flex-col gap-1 mt-1">
+            <div class="flex flex-row gap-1 items-center">
+              <p class="m-0 w-16 h-full">Token</p>
+              <a-textarea
+                v-model:value="httpToken"
+                size="small"
+                class="mt-1"
+                rows="4"
+                placeholder="请输入Token"
+              />
+            </div>
+          </div>
         </template>
       </a-card>
 
@@ -134,6 +153,7 @@ const auth = ref(props.modelValue.auth.type);
 const path = ref(props.modelValue.path);
 const httpUser = ref(props.modelValue.auth.username || "");
 const httpPassword = ref(props.modelValue.auth.password || "");
+const httpToken = ref(props.modelValue.auth.token || "");
 const params = ref<KeyValuePair[]>(props.modelValue.params);
 const headers = ref<KeyValuePair[]>(props.modelValue.headers);
 const bodyParams = ref<KeyValuePair[]>(props.modelValue.body.formData || []);
@@ -151,9 +171,9 @@ function debounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
   };
 }
 
-// 创建一个更新schema的函数
-const updateSchema = debounce(() => {
-  const schema: RequestSchema = {
+// 创建一个生成schema的函数
+const generateSchema = () => {
+  return {
     method: method.value,
     url: url.value,
     path: path.value,
@@ -163,6 +183,10 @@ const updateSchema = debounce(() => {
         ? {
             username: httpUser.value,
             password: httpPassword.value,
+          }
+        : auth.value === "Bearer"
+        ? {
+            token: httpToken.value,
           }
         : {}),
     },
@@ -177,7 +201,11 @@ const updateSchema = debounce(() => {
         : { raw: rawBody.value }),
     },
   };
-  emit("update:modelValue", schema);
+};
+
+// 创建一个更新schema的函数
+const updateSchema = debounce(() => {
+  emit("update:modelValue", generateSchema());
 }, 100);
 
 // 监听内部状态变化
@@ -189,6 +217,7 @@ watch(
     auth,
     httpUser,
     httpPassword,
+    httpToken,
     params,
     headers,
     contentType,
@@ -206,34 +235,9 @@ watch(
 watch(
   () => props.modelValue,
   (newValue) => {
+    const currentSchema = generateSchema();
     // 防止循环更新
-    if (
-      JSON.stringify(newValue) ===
-      JSON.stringify({
-        method: method.value,
-        url: url.value,
-        path: path.value,
-        auth: {
-          type: auth.value,
-          ...(auth.value === "Basic"
-            ? {
-                username: httpUser.value,
-                password: httpPassword.value,
-              }
-            : {}),
-        },
-        params: params.value,
-        headers: headers.value,
-        body: {
-          type: contentType.value,
-          ...(contentType.value === "application/json"
-            ? { json: jsonBody.value }
-            : contentType.value === "multipart/form-data"
-            ? { formData: bodyParams.value }
-            : { raw: rawBody.value }),
-        },
-      })
-    ) {
+    if (JSON.stringify(newValue) === JSON.stringify(currentSchema)) {
       return;
     }
 
@@ -243,6 +247,7 @@ watch(
     auth.value = newValue.auth.type;
     httpUser.value = newValue.auth.username || "";
     httpPassword.value = newValue.auth.password || "";
+    httpToken.value = newValue.auth.token || "";
     params.value = newValue.params;
     headers.value = newValue.headers;
     contentType.value = newValue.body.type;
@@ -306,6 +311,10 @@ const handleJsonInput = () => {
   padding: 0px;
 }
 
+.request-form * {
+  font-size: 0.9rem;
+}
+
 .form-section {
   margin-bottom: 8px;
   width: 100%;
@@ -329,30 +338,6 @@ const handleJsonInput = () => {
   display: flex;
   gap: 8px;
   align-items: center;
-}
-
-:deep(.ant-space-item) {
-  flex: 1;
-}
-
-:deep(.ant-space-item:first-child) {
-  flex: 0 0 100px;
-}
-
-:deep(.ant-space-item:nth-child(3)) {
-  flex: 0 0 200px;
-}
-
-:deep(.ant-space-item:last-child) {
-  flex: 0 0 80px;
-}
-
-:deep(.ant-list-item) {
-  padding: 4px 0;
-}
-
-:deep(.ant-form-item) {
-  margin-bottom: 8px;
 }
 
 pre {
