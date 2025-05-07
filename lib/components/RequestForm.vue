@@ -13,9 +13,6 @@
           </a-select>
           <a-input v-model:value="url" placeholder="基础URL" style="width: 100%" size="small" />
           <a-input v-model:value="path" placeholder="路径" style="width: 200px" size="small" />
-          <a-button type="primary" @click="sendRequest" style="width: 100px" size="small"
-            >发送</a-button
-          >
         </a-space>
       </a-card>
 
@@ -50,11 +47,7 @@
 
       <!-- 请求头部分 -->
       <a-card title="请求头" class="form-section" size="small">
-        <KeyValueInput
-          v-model="headers"
-          add-button-text="添加请求头"
-          :show-preview="false"
-        />
+        <KeyValueInput v-model="headers" add-button-text="添加请求头" :show-preview="false" />
       </a-card>
 
       <!-- 请求体部分 -->
@@ -103,11 +96,7 @@
         <!-- Raw 输入 -->
         <template v-if="contentType === 'text/plain'">
           <a-form-item label="原始数据">
-            <a-textarea
-              v-model:value="rawBody"
-              :rows="6"
-              placeholder="请输入原始数据"
-            />
+            <a-textarea v-model:value="rawBody" :rows="6" placeholder="请输入原始数据" />
           </a-form-item>
         </template>
 
@@ -116,34 +105,6 @@
           <pre>{{ requestBodyPreview }}</pre>
         </a-form-item>
       </a-card>
-
-      <!-- 响应部分 -->
-      <a-card title="响应" class="form-section" size="small">
-        <a-descriptions>
-          <a-descriptions-item label="状态">
-            {{ response.status }}
-          </a-descriptions-item>
-        </a-descriptions>
-
-        <a-table
-          :columns="[
-            { title: '头部', dataIndex: 'key', width: '30%' },
-            { title: '值', dataIndex: 'value' },
-          ]"
-          :data-source="Object.entries(response.headers).map(([key, value]) => ({ key, value }))"
-          :pagination="false"
-          size="small"
-          style="margin: 8px 0"
-        />
-
-        <a-textarea
-          v-model:value="response.body"
-          :rows="5"
-          readonly
-          style="width: 100%"
-          size="small"
-        />
-      </a-card>
     </a-form>
   </div>
 </template>
@@ -151,7 +112,7 @@
 <script setup lang="ts">
 import { ref, computed, watch } from "vue";
 import KeyValueInput from "./KeyValueInput.vue";
-import type { RequestSchema, KeyValuePair, ResponseData } from "../types/request";
+import type { RequestSchema, KeyValuePair } from "../types/request";
 import { defaultRequestSchema } from "../types/request";
 
 interface Props {
@@ -159,27 +120,12 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  modelValue: () => defaultRequestSchema
+  modelValue: () => defaultRequestSchema,
 });
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: RequestSchema): void;
 }>();
-
-function parseHeaders(xhr: XMLHttpRequest) {
-  const headers = xhr
-    .getAllResponseHeaders()
-    .trim()
-    .split(/[\r\n]+/);
-  const headerMap: Record<string, string> = {};
-  headers.forEach(function (line) {
-    const parts = line.split(": ");
-    const header = parts.shift()?.toLowerCase() || "";
-    const value = parts.join(": ");
-    headerMap[header] = value;
-  });
-  return headerMap;
-}
 
 // 响应式状态
 const method = ref(props.modelValue.method);
@@ -192,11 +138,6 @@ const params = ref<KeyValuePair[]>(props.modelValue.params);
 const headers = ref<KeyValuePair[]>(props.modelValue.headers);
 const bodyParams = ref<KeyValuePair[]>(props.modelValue.body.formData || []);
 const contentType = ref(props.modelValue.body.type);
-const response = ref<ResponseData>({
-  status: "",
-  headers: {},
-  body: "",
-});
 const jsonBody = ref(props.modelValue.body.json || "");
 const rawBody = ref(props.modelValue.body.raw || "");
 const jsonError = ref("");
@@ -218,90 +159,101 @@ const updateSchema = debounce(() => {
     path: path.value,
     auth: {
       type: auth.value,
-      ...(auth.value === "Basic" ? {
-        username: httpUser.value,
-        password: httpPassword.value
-      } : {})
+      ...(auth.value === "Basic"
+        ? {
+            username: httpUser.value,
+            password: httpPassword.value,
+          }
+        : {}),
     },
     params: params.value,
     headers: headers.value,
     body: {
       type: contentType.value,
-      ...(contentType.value === "application/json" ? { json: jsonBody.value } :
-          contentType.value === "multipart/form-data" ? { formData: bodyParams.value } :
-          { raw: rawBody.value })
-    }
+      ...(contentType.value === "application/json"
+        ? { json: jsonBody.value }
+        : contentType.value === "multipart/form-data"
+        ? { formData: bodyParams.value }
+        : { raw: rawBody.value }),
+    },
   };
   emit("update:modelValue", schema);
 }, 100);
 
 // 监听内部状态变化
-watch([method, url, path, auth, httpUser, httpPassword, params, headers, contentType, bodyParams, jsonBody, rawBody], () => {
-  updateSchema();
-}, { deep: true });
+watch(
+  [
+    method,
+    url,
+    path,
+    auth,
+    httpUser,
+    httpPassword,
+    params,
+    headers,
+    contentType,
+    bodyParams,
+    jsonBody,
+    rawBody,
+  ],
+  () => {
+    updateSchema();
+  },
+  { deep: true }
+);
 
 // 监听外部变化
-watch(() => props.modelValue, (newValue) => {
-  // 防止循环更新
-  if (JSON.stringify(newValue) === JSON.stringify({
-    method: method.value,
-    url: url.value,
-    path: path.value,
-    auth: {
-      type: auth.value,
-      ...(auth.value === "Basic" ? {
-        username: httpUser.value,
-        password: httpPassword.value
-      } : {})
-    },
-    params: params.value,
-    headers: headers.value,
-    body: {
-      type: contentType.value,
-      ...(contentType.value === "application/json" ? { json: jsonBody.value } :
-          contentType.value === "multipart/form-data" ? { formData: bodyParams.value } :
-          { raw: rawBody.value })
+watch(
+  () => props.modelValue,
+  (newValue) => {
+    // 防止循环更新
+    if (
+      JSON.stringify(newValue) ===
+      JSON.stringify({
+        method: method.value,
+        url: url.value,
+        path: path.value,
+        auth: {
+          type: auth.value,
+          ...(auth.value === "Basic"
+            ? {
+                username: httpUser.value,
+                password: httpPassword.value,
+              }
+            : {}),
+        },
+        params: params.value,
+        headers: headers.value,
+        body: {
+          type: contentType.value,
+          ...(contentType.value === "application/json"
+            ? { json: jsonBody.value }
+            : contentType.value === "multipart/form-data"
+            ? { formData: bodyParams.value }
+            : { raw: rawBody.value }),
+        },
+      })
+    ) {
+      return;
     }
-  })) {
-    return;
-  }
 
-  method.value = newValue.method;
-  url.value = newValue.url;
-  path.value = newValue.path;
-  auth.value = newValue.auth.type;
-  httpUser.value = newValue.auth.username || "";
-  httpPassword.value = newValue.auth.password || "";
-  params.value = newValue.params;
-  headers.value = newValue.headers;
-  contentType.value = newValue.body.type;
-  bodyParams.value = newValue.body.formData || [];
-  jsonBody.value = newValue.body.json || "";
-  rawBody.value = newValue.body.raw || "";
-}, { deep: true });
+    method.value = newValue.method;
+    url.value = newValue.url;
+    path.value = newValue.path;
+    auth.value = newValue.auth.type;
+    httpUser.value = newValue.auth.username || "";
+    httpPassword.value = newValue.auth.password || "";
+    params.value = newValue.params;
+    headers.value = newValue.headers;
+    contentType.value = newValue.body.type;
+    bodyParams.value = newValue.body.formData || [];
+    jsonBody.value = newValue.body.json || "";
+    rawBody.value = newValue.body.raw || "";
+  },
+  { deep: true }
+);
 
 // 计算属性
-const rawRequestBody = computed(() => {
-  if (contentType.value === "application/json") {
-    try {
-      const obj = JSON.parse(`{
-        ${bodyParams.value
-          .filter((p) => !!p.key)
-          .map((p) => `"${p.key}": "${p.value}"`)
-          .join()}
-      }`);
-      return JSON.stringify(obj);
-    } catch (ex) {
-      return "invalid";
-    }
-  } else {
-    return bodyParams.value
-      .filter((p) => !!p.key)
-      .map((p) => p.key + "=" + encodeURIComponent(p.value))
-      .join("&");
-  }
-});
-
 const queryString = computed(() => {
   const result = params.value
     .filter((p) => !!p.key)
@@ -322,7 +274,10 @@ const requestBodyPreview = computed(() => {
       const boundary = "----WebKitFormBoundaryPreview";
       const formData = bodyParams.value
         .filter((p) => !!p.key)
-        .map((p) => `--${boundary}\r\nContent-Disposition: form-data; name="${p.key}"\r\n\r\n${p.value}\r\n`)
+        .map(
+          (p) =>
+            `--${boundary}\r\nContent-Disposition: form-data; name="${p.key}"\r\n\r\n${p.value}\r\n`
+        )
         .join("");
       return formData + `--${boundary}--\r\n`;
     case "text/plain":
@@ -342,67 +297,13 @@ const handleJsonInput = () => {
     jsonError.value = "Invalid JSON format";
   }
 };
-
-// 方法
-const sendRequest = () => {
-  const xhr = new XMLHttpRequest();
-  const user = auth.value === "Basic" ? httpUser.value : null;
-  const pswd = auth.value === "Basic" ? httpPassword.value : null;
-  xhr.open(method.value, url.value + path.value + queryString.value, true, user, pswd);
-  
-  // 添加自定义请求头
-  headers.value.forEach(header => {
-    if (header.key) {
-      xhr.setRequestHeader(header.key, header.value);
-    }
-  });
-
-  if (method.value === "POST" || method.value === "PUT") {
-    let requestBody = "";
-    
-    switch (contentType.value) {
-      case "application/json":
-        requestBody = jsonBody.value;
-        break;
-      case "multipart/form-data":
-        const formData = new FormData();
-        bodyParams.value.forEach(param => {
-          if (param.key) {
-            formData.append(param.key, param.value);
-          }
-        });
-        requestBody = formData as any;
-        // 让浏览器自动处理 multipart/form-data 的 Content-Type 和 boundary
-        break;
-      case "text/plain":
-        requestBody = rawBody.value;
-        break;
-    }
-
-    if (contentType.value !== "multipart/form-data") {
-      xhr.setRequestHeader("Content-Type", contentType.value + "; charset=utf-8");
-    }
-    xhr.send(requestBody);
-  } else {
-    xhr.send();
-  }
-  xhr.onload = () => {
-    response.value.status = xhr.status.toString();
-    const headers = (response.value.headers = parseHeaders(xhr));
-    if ((headers["content-type"] || "").startsWith("application/json")) {
-      response.value.body = JSON.stringify(JSON.parse(xhr.responseText), null, 2);
-    } else {
-      response.value.body = xhr.responseText;
-    }
-  };
-};
 </script>
 
 <style scoped>
 .request-form {
   width: 100%;
   margin: 0 auto;
-  padding: 8px;
+  padding: 0px;
 }
 
 .form-section {

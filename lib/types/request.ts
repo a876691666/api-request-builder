@@ -24,6 +24,7 @@ export interface ResponseData {
   status: string;
   headers: Record<string, string>;
   body: string;
+  timing?: number;
 }
 
 // 完整的请求Schema类型
