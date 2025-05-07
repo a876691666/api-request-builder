@@ -21,26 +21,6 @@ pnpm add vue-api-request-builder
 
 ```vue
 <template>
-  <RequestForm v-model="requestSchema" @update:modelValue="handleSchemaChange" />
-  <ResponseSection v-model="requestSchema" />
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import { RequestForm, ResponseSection, type RequestSchema, defaultRequestSchema } from 'vue-api-request-builder';
-
-const requestSchema = ref<RequestSchema>(defaultRequestSchema);
-
-const handleSchemaChange = (newSchema: RequestSchema) => {
-  console.log("Schema changed:", newSchema);
-};
-</script>
-```
-
-### Advanced Usage with Preview
-
-```vue
-<template>
   <div class="app-container">
     <RequestForm v-model="requestSchema" @update:modelValue="handleSchemaChange" />
     <ResponseSection v-model="requestSchema" />
@@ -48,7 +28,7 @@ const handleSchemaChange = (newSchema: RequestSchema) => {
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { RequestForm, ResponseSection, type RequestSchema, defaultRequestSchema } from 'vue-api-request-builder';
 
 const requestSchema = ref<RequestSchema>(defaultRequestSchema);

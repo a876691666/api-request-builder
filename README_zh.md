@@ -21,26 +21,6 @@ pnpm add vue-api-request-builder
 
 ```vue
 <template>
-  <RequestForm v-model="requestSchema" @update:modelValue="handleSchemaChange" />
-  <ResponseSection v-model="requestSchema" />
-</template>
-
-<script setup lang="ts">
-import { ref } from 'vue';
-import { RequestForm, ResponseSection, type RequestSchema, defaultRequestSchema } from 'vue-api-request-builder';
-
-const requestSchema = ref<RequestSchema>(defaultRequestSchema);
-
-const handleSchemaChange = (newSchema: RequestSchema) => {
-  console.log("Schema changed:", newSchema);
-};
-</script>
-```
-
-### 高级用法
-
-```vue
-<template>
   <div class="app-container">
     <RequestForm v-model="requestSchema" @update:modelValue="handleSchemaChange" />
     <ResponseSection v-model="requestSchema" />
