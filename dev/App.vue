@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import RequestForm from "../lib/components/RequestForm.vue";
-import ResponseSection from "../lib/components/ResponseSection.vue";
-import type { RequestSchema } from "../lib/types/request";
-import { defaultRequestSchema } from "../lib/types/request";
+import {
+  DataTransform,
+  RequestForm,
+  ResponseSection,
+  type RequestSchema,
+  defaultRequestSchema,
+} from "../lib";
 
 const requestSchema = ref<RequestSchema>(defaultRequestSchema);
 const previewContent = ref(JSON.stringify(requestSchema.value, null, 2));
@@ -65,6 +68,7 @@ watch(
 
     <ResponseSection class="w-360px min-w-360px" v-model="requestSchema" />
   </div>
+  <DataTransform />
 </template>
 
 <style scoped>
