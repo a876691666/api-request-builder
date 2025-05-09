@@ -6,6 +6,7 @@ export { DataTransform } from "./components/DataTransform";
 import type { RequestSchema, KeyValuePair, ResponseData } from "./types/request";
 import { defaultRequestSchema } from "./types/request";
 import { executeRequest } from "./utils/request";
+import { executeTransformFunction, validateTransformFunction } from "./utils/transform";
 
 export {
   RequestForm,
@@ -16,6 +17,8 @@ export {
   type ResponseData,
   defaultRequestSchema,
   executeRequest,
+  executeTransformFunction,
+  validateTransformFunction,
 };
 
 export default RequestForm;
