@@ -7,14 +7,16 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist"
-  ],
-  "scripts": {
+  ],  "scripts": {
     "dev": "vite",
     "test": "vite --config vite.test.config.ts",
     "build:all": "npm run build && npm run build:static",
     "build": "vue-tsc -b && vite build --config vite.lib.config.ts",
     "build:static": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "release": "node scripts/release.js",
+    "release:minor": "node scripts/release.js minor",
+    "release:major": "node scripts/release.js major"
   },
   "peerDependencies": {
     "ant-design-vue": "^4.0.0",

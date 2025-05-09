@@ -1,0 +1,5 @@
+# 设置行尾终止符统一为LF
+* text=auto eol=lf
+
+# 确保脚本保持执行权限
+scripts/*.js text eol=lf
