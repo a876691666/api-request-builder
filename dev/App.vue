@@ -37,20 +37,22 @@ watch(
   { deep: true }
 );
 
-const transformFunctionString = ref("");
+const transformFunctionString = ref(`function transformData(data) {
+return data.results.map(item => item.name); 
+}`);
 
 // 示例数据
 const sampleData = ref({
   results: [
     { id: 1, name: "项目1", description: "这是第一个项目的详细描述", status: "active" },
     { id: 2, name: "项目2", description: "这是第二个项目的详细描述", status: "pending" },
-    { id: 3, name: "项目3", description: "这是第三个项目的详细描述", status: "completed" }
+    { id: 3, name: "项目3", description: "这是第三个项目的详细描述", status: "completed" },
   ],
   pagination: {
     total: 3,
     page: 1,
-    pageSize: 10
-  }
+    pageSize: 10,
+  },
 });
 
 // 存储转换后的数据
@@ -58,28 +60,25 @@ const transformedData = ref(null);
 
 // 应用转换函数
 const applyTransform = () => {
-  transformedData.value = executeTransformFunction(
-    transformFunctionString.value,
-    sampleData.value
-  );
+  transformedData.value = executeTransformFunction(transformFunctionString.value, sampleData.value);
 };
 </script>
 
 <template>
-  <div class="flex w-full h-full justify-center items-center gap-4 py-10">
-    <RequestForm
-      class="w-360px min-w-360px"
-      v-model="requestSchema"
-      @update:modelValue="handleSchemaChange"
-    />
-
-    <div class="text-sm text-center nowrap">
-      转换 >
-      <br />
-      {{`<RequestForm v-model="schame" />`}}
+  <div
+    class="flex w-full h-full justify-center items-center gap-4 py-10 flex-wrap p-4 overflow-auto"
+  >
+    <div class="w-360px min-w-360px">
+      <div class="text-sm text-center nowrap">1. 配置</div>
+      <RequestForm v-model="requestSchema" @update:modelValue="handleSchemaChange" />
     </div>
 
     <div class="w-360px min-w-360px">
+      <div class="text-sm text-center nowrap">
+        2. 转换
+        <br />
+        {{`<RequestForm v-model="schame" />`}}
+      </div>
       <textarea
         v-model="previewContent"
         @input="handlePreviewChange"
@@ -88,74 +87,56 @@ const applyTransform = () => {
       ></textarea>
     </div>
 
-    <div class="text-sm text-center nowrap">
-      调用 >
-      <br />
-      executeRequest(schame.value)
-    </div>    <ResponseSection class="w-360px min-w-360px" v-model="requestSchema" />
-  </div>  <div class="mt-4 px-4">
-    <div class="card-container">
-      <div class="card-title">数据转换函数示例</div>
-      <div class="flex gap-3">
-        <div class="w-1/2">
-          <div class="section-title">转换函数编辑器</div>
-          <div class="card-content mb-2">
-            <DataTransform v-model="transformFunctionString" />
-            <div class="mt-2">
-              <button 
-                @click="applyTransform" 
-                class="transform-btn"
-              >
-                应用转换
-              </button>
-            </div>
-          </div>
-          
-          <div class="mb-2">
-            <div class="section-title">转换函数字符串</div>
-            <div class="code-container max-h-32">
-              <pre>{{ transformFunctionString }}</pre>
-            </div>
-          </div>
-        </div>
-        
-        <div class="w-1/2">
-          <div class="mb-2">
-            <div class="section-title">原始数据</div>
-            <div class="code-container max-h-48">
-              <pre>{{ JSON.stringify(sampleData, null, 2) }}</pre>
-            </div>
-          </div>
-          
-          <div class="mb-2">
-            <div class="section-title">转换后数据</div>
-            <div class="code-container max-h-48">
-              <pre>{{ transformedData ? JSON.stringify(transformedData, null, 2) : '尚未应用转换' }}</pre>
-            </div>
-          </div>
-        </div>
+    <div class="w-360px min-w-360px">
+      <div class="text-sm text-center nowrap">
+        3. 调用
+        <br />
+        data = executeRequest(schame.value)
       </div>
-      
-      <div class="mt-2">
-        <div class="section-title">使用示例</div>
-        <div class="code-container">
-          <pre>
-import { executeTransformFunction } from 'api-request-builder';
+      <ResponseSection v-model="requestSchema" />
+    </div>
 
-// 从DataTransform组件获取的函数字符串
-const transformFn = 'function transformData(data) {\\n  return data.results.map(item => ({\\n    id: item.id,\\n    name: item.name\\n  }));\\n}';
+    <div class="w-360px min-w-360px">
+      <div class="text-sm text-center nowrap">
+        4. 配置数据转换函数
+        <br />
+        {{ `<DataTransform v-model="transformFunctionString" />` }}
+      </div>
 
-// 应用转换函数
-const result = executeTransformFunction(transformFn, responseData);
-          </pre>
-        </div>
-        
-        <div class="tip-container mt-2">
-          <div class="tip-title">提示</div>
-          <p class="tip-content">
-            尝试在编辑器中输入以下转换函数，然后点击"应用转换"按钮：
-            <code class="inline-code">return data.results.map(item => ({ id: item.id, name: item.name }));</code>
-          </p>
+      <div class="w-full h-200px">
+        <DataTransform v-model="transformFunctionString" />
+      </div>
+    </div>
+
+    <div class="w-360px min-w-360px">
+      <div class="text-sm text-center nowrap">
+        5. 调用转换数据
+        <br />
+        <p class="whitespace-nowrap">executeTransformFunction(transformFunctionString, data)</p>
+      </div>
+
+      <div class="w-full h-200px">
+        <div class="card-container">
+          <div class="card-title">数据转换示例</div>
+          <div class="card-content">
+            <button @click="applyTransform" class="transform-btn mb-4">转换</button>
+            <div class="flex justify-between">
+              <div class="w-1/2 pr-2">
+                <div class="section-title">模拟数据：</div>
+                <div class="code-container h-200px">
+                  <pre>{{ JSON.stringify(sampleData, null, 2) }}</pre>
+                </div>
+              </div>
+              <div class="w-1/2 pl-2">
+                <div class="section-title">转换后数据：</div>
+                <div class="code-container h-200px">
+                  <pre>{{
+                    transformedData ? JSON.stringify(transformedData, null, 2) : "暂无转换数据"
+                  }}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -235,7 +216,7 @@ const result = executeTransformFunction(transformFn, responseData);
   border: 1px solid #e8e8e8;
   border-radius: 2px;
   padding: 8px;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   font-size: 11px;
   line-height: 1.4;
   overflow: auto;
@@ -297,8 +278,19 @@ const result = executeTransformFunction(transformFn, responseData);
   background-color: #f5f5f5;
   padding: 1px 3px;
   border-radius: 2px;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   font-size: 11px;
   border: 1px solid #eee;
+}
+</style>
+<style>
+html,
+body,
+#app {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 </style>

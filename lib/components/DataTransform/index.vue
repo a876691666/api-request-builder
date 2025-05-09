@@ -1,5 +1,5 @@
 <template>
-  <div class="w-400px h-400px data-transform-container">
+  <div class="w-full h-full data-transform-container">
     <div class="function-container monaco-component">
       <span class="function-name">function</span> transformData<span class="yellow">(</span
       >data<span class="yellow">) {</span>
@@ -120,7 +120,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .monaco-editor-container {
   width: 100%;
-  height: 300px;
+  height: calc(100% - 32px);
 }
 
 .data-transform-container {
@@ -131,6 +131,7 @@ onBeforeUnmount(() => {
 }
 
 .function-container {
+  line-height: 16px;
   background: var(--vscode-editor-background);
 }
 
