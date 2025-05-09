@@ -5,6 +5,30 @@
 # Start of Selection
 [English Documentation](README.md)
 
+## 工作流程
+
+```mermaid
+graph TD
+    A[开始] --> B[配置请求]
+    B --> C[RequestForm 组件]
+    C --> D[设置请求参数]
+    D --> E[URL/路径]
+    D --> F[认证方式]
+    D --> G[请求头]
+    D --> H[请求体]
+    E & F & G & H --> I[执行请求]
+    I --> J[ResponseSection 组件]
+    J --> K[显示响应]
+    K --> L[状态码]
+    K --> M[响应头]
+    K --> N[响应体]
+    L & M & N --> O[数据转换]
+    O --> P[DataTransform 组件]
+    P --> Q[转换函数]
+    Q --> R[转换结果]
+    R --> S[结束]
+```
+
 ## 安装
 
 ```bash

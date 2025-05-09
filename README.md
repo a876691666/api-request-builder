@@ -5,6 +5,30 @@ A Vue 3 component for building and testing API requests with a beautiful UI.
 # Start of Selection
 [中文文档](README_zh.md)
 
+## Workflow
+
+```mermaid
+graph TD
+    A[Start] --> B[Configure Request]
+    B --> C[RequestForm Component]
+    C --> D[Set Request Parameters]
+    D --> E[URL/Path]
+    D --> F[Authentication]
+    D --> G[Headers]
+    D --> H[Request Body]
+    E & F & G & H --> I[Execute Request]
+    I --> J[ResponseSection Component]
+    J --> K[Display Response]
+    K --> L[Status Code]
+    K --> M[Response Headers]
+    K --> N[Response Body]
+    L & M & N --> O[Data Transformation]
+    O --> P[DataTransform Component]
+    P --> Q[Transform Function]
+    Q --> R[Transformed Result]
+    R --> S[End]
+```
+
 ## Installation
 
 ```bash
