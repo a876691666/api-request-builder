@@ -35,6 +35,8 @@ watch(
   },
   { deep: true }
 );
+
+const transformFunctionString = ref("");
 </script>
 
 <template>
@@ -68,7 +70,9 @@ watch(
 
     <ResponseSection class="w-360px min-w-360px" v-model="requestSchema" />
   </div>
-  <DataTransform />
+  <DataTransform v-model="transformFunctionString" />
+
+  <pre>{{ transformFunctionString }}</pre>
 </template>
 
 <style scoped>
