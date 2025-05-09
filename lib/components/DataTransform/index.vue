@@ -9,7 +9,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -18,16 +18,16 @@ import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
 import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 
-const modelValue = defineModel();
-const editorContainer = ref(null);
-let editor = null;
+const modelValue = defineModel<string>();
+const editorContainer = ref<HTMLElement | null>(null);
+let editor: monaco.editor.IStandaloneCodeEditor | null = null;
 
 // 处理函数包装
 const functionPrefix = "function transformData(data) {";
 const functionSuffix = "}";
 
 // 从完整代码提取编辑器内容
-const getEditorContent = (fullCode) => {
+const getEditorContent = (fullCode: string) => {
   if (!fullCode) return "return data";
 
   if (fullCode.startsWith(functionPrefix) && fullCode.endsWith(functionSuffix)) {
@@ -40,11 +40,11 @@ const getEditorContent = (fullCode) => {
 };
 
 // 将编辑器内容包装成完整函数
-const getFullCode = (editorContent) => {
+const getFullCode = (editorContent: string) => {
   const indentedContent = editorContent
-    .split('\n')
-    .map(line => `  ${line}`)
-    .join('\n');
+    .split("\n")
+    .map((line) => `  ${line}`)
+    .join("\n");
   return `${functionPrefix}\n${indentedContent}\n${functionSuffix}`;
 };
 
@@ -70,9 +70,9 @@ onMounted(() => {
   if (!modelValue.value) {
     modelValue.value = "function transformData(data) {\n  return data\n}";
   }
-  const initialContent = getEditorContent(modelValue.value) || "return data";
+  const initialContent = getEditorContent(modelValue.value as string) || "return data";
 
-  editor = monaco.editor.create(editorContainer.value, {
+  editor = monaco.editor.create(editorContainer.value as HTMLElement, {
     value: initialContent,
     language: "javascript",
     theme: "vs-dark",
@@ -92,15 +92,15 @@ onMounted(() => {
 
   // 监听编辑器内容变化
   editor.onDidChangeModelContent(() => {
-    const editorContent = editor.getValue();
-    modelValue.value = getFullCode(editorContent);
+    const editorContent = editor?.getValue();
+    modelValue.value = getFullCode(editorContent || "");
   });
 });
 
 // 监听v-model变化，更新编辑器内容
 watch(modelValue, (newValue) => {
   if (editor) {
-    const editorContent = getEditorContent(newValue);
+    const editorContent = getEditorContent(newValue as string);
     const currentContent = editor.getValue();
 
     // 只有当外部值真正改变时才更新编辑器
