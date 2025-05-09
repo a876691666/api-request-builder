@@ -82,6 +82,19 @@ Displays the response from the API request.
   - Response body with formatting
 - Error handling and display
 
+### DataTransform
+
+Component for configuring and executing data transformation functions.
+
+#### Props
+- `modelValue` (string): The transformation function string (v-model)
+
+#### Features
+- Code editor interface
+- JavaScript function support
+- Real-time syntax checking
+- Function execution preview
+
 ### KeyValueInput
 
 A reusable component for managing key-value pairs.
@@ -156,6 +169,17 @@ function executeRequest(
 ```
 
 Executes the API request using either Fetch API or XMLHttpRequest.
+
+### executeTransformFunction
+
+```typescript
+function executeTransformFunction(
+  transformFunctionString: string,
+  data: any
+): any
+```
+
+Executes a data transformation function to convert input data into the desired format.
 
 ## Dependencies
 

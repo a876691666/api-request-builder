@@ -82,6 +82,19 @@ const handleSchemaChange = (newSchema: RequestSchema) => {
   - 响应体（带格式化）
 - 错误处理和显示
 
+### DataTransform
+
+用于配置和执行数据转换函数的组件。
+
+#### 属性
+- `modelValue` (string): 转换函数字符串 (v-model)
+
+#### 功能
+- 提供代码编辑器界面
+- 支持 JavaScript 函数编写
+- 实时语法检查
+- 函数执行结果预览
+
 ### KeyValueInput
 
 用于管理键值对的可复用组件。
@@ -156,6 +169,17 @@ function executeRequest(
 ```
 
 使用 Fetch API 或 XMLHttpRequest 执行 API 请求。
+
+### executeTransformFunction
+
+```typescript
+function executeTransformFunction(
+  transformFunctionString: string,
+  data: any
+): any
+```
+
+执行数据转换函数，将输入数据转换为所需的格式。
 
 ## 依赖项
 
