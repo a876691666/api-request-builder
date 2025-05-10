@@ -33,7 +33,7 @@
     "monaco-editor-core": "^0.52.2",
     "shiki": "^3.4.0",
     "vue": "^3.5.13",
-    "vue-api-request-builder": "^0.2.5"
+    "vue-api-request-builder": "^0.2.6"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
