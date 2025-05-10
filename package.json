@@ -1,6 +1,6 @@
 {
   "name": "vue-api-request-builder",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "type": "module",
   "main": "dist/index.umd.js",
   "module": "dist/index.es.js",
