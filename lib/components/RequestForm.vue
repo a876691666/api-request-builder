@@ -31,10 +31,8 @@
             :preview-text="url + path + queryString"
           />
         </div>
-      </a-card>
-
-      <!-- 认证部分 -->
-      <a-card title="认证方案" class="form-section" size="small">
+      </a-card>      <!-- 认证部分 -->
+      <a-card v-if="props.showAuth" title="认证方案" class="form-section" size="small">
         <a-radio-group v-model:value="auth" button-style="solid" size="small">
           <a-radio-button value="none">无认证</a-radio-button>
           <a-radio-button value="Basic">Basic认证</a-radio-button>
@@ -133,10 +131,12 @@ import { defaultRequestSchema } from "../types/request";
 
 interface Props {
   modelValue?: RequestSchema;
+  showAuth?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: () => defaultRequestSchema,
+  showAuth: false,
 });
 
 const emit = defineEmits<{
@@ -170,23 +170,12 @@ function debounce<T extends (...args: any[]) => any>(fn: T, delay: number) {
 
 // 创建一个生成schema的函数
 const generateSchema = () => {
-  return {
+  // 创建符合RequestSchema的基础结构
+  const schema: RequestSchema = {
     method: method.value,
     url: url.value,
     path: path.value,
-    auth: {
-      type: auth.value,
-      ...(auth.value === "Basic"
-        ? {
-            username: httpUser.value,
-            password: httpPassword.value,
-          }
-        : auth.value === "Bearer"
-        ? {
-            token: httpToken.value,
-          }
-        : {}),
-    },
+    auth: { type: 'none' }, // 默认提供一个空的auth对象
     params: params.value,
     headers: headers.value,
     body: {
@@ -198,6 +187,25 @@ const generateSchema = () => {
         : { raw: rawBody.value }),
     },
   };
+
+  // 只有在显示授权时才使用实际的auth值
+  if (props.showAuth) {
+    schema.auth = {
+      type: auth.value,
+      ...(auth.value === "Basic"
+        ? {
+            username: httpUser.value,
+            password: httpPassword.value,
+          }
+        : auth.value === "Bearer"
+        ? {
+            token: httpToken.value,
+          }
+        : {}),
+    };
+  }
+
+  return schema;
 };
 
 // 创建一个更新schema的函数
@@ -241,10 +249,15 @@ watch(
     method.value = newValue.method;
     url.value = newValue.url;
     path.value = newValue.path;
-    auth.value = newValue.auth.type;
-    httpUser.value = newValue.auth.username || "";
-    httpPassword.value = newValue.auth.password || "";
-    httpToken.value = newValue.auth.token || "";
+    
+    // 只有在显示授权且外部schema中有auth属性时才更新auth相关数据
+    if (props.showAuth && newValue.auth) {
+      auth.value = newValue.auth.type;
+      httpUser.value = newValue.auth.username || "";
+      httpPassword.value = newValue.auth.password || "";
+      httpToken.value = newValue.auth.token || "";
+    }
+    
     params.value = newValue.params;
     headers.value = newValue.headers;
     contentType.value = newValue.body.type;
