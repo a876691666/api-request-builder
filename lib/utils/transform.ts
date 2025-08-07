@@ -20,7 +20,7 @@ export function executeTransformFunction<T = any, R = any>(
   try {
     // 提取函数体
     let functionBody = transformFunctionString;
-    const functionPrefix = 'function transformData(data) {';
+    const functionPrefix = 'function transformData(data)';
     const functionSuffix = '}';
 
     // 如果传入的是完整函数，则提取函数体
