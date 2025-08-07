@@ -24,9 +24,15 @@ export function executeTransformFunction<T = any, R = any>(
     const functionSuffix = '}';
 
     // 如果传入的是完整函数，则提取函数体
-    if (functionBody.startsWith(functionPrefix) && functionBody.endsWith(functionSuffix)) {
-      functionBody = functionBody
-        .substring(functionPrefix.length, functionBody.length - functionSuffix.length)
+    const trimmedFunction = functionBody.trim();
+    const functionStartIndex = trimmedFunction.indexOf(functionPrefix);
+    const functionEndIndex = trimmedFunction.lastIndexOf(functionSuffix);
+    
+    if (functionStartIndex !== -1 && functionEndIndex !== -1 && 
+        functionEndIndex > functionStartIndex + functionPrefix.length) {
+      // 提取函数体（去除函数声明和最后的大括号）
+      functionBody = trimmedFunction
+        .substring(functionStartIndex + functionPrefix.length, functionEndIndex)
         .trim();
     }
 
@@ -57,9 +63,15 @@ export function validateTransformFunction(transformFunctionString: string): bool
     const functionSuffix = '}';
 
     // 如果传入的是完整函数，则提取函数体
-    if (functionBody.startsWith(functionPrefix) && functionBody.endsWith(functionSuffix)) {
-      functionBody = functionBody
-        .substring(functionPrefix.length, functionBody.length - functionSuffix.length)
+    const trimmedFunction = functionBody.trim();
+    const functionStartIndex = trimmedFunction.indexOf(functionPrefix);
+    const functionEndIndex = trimmedFunction.lastIndexOf(functionSuffix);
+    
+    if (functionStartIndex !== -1 && functionEndIndex !== -1 && 
+        functionEndIndex > functionStartIndex + functionPrefix.length) {
+      // 提取函数体（去除函数声明和最后的大括号）
+      functionBody = trimmedFunction
+        .substring(functionStartIndex + functionPrefix.length, functionEndIndex)
         .trim();
     }
 
