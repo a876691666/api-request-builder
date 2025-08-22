@@ -20,20 +20,18 @@ export function executeTransformFunction<T = any, R = any>(
   try {
     // 提取函数体
     let functionBody = transformFunctionString;
-    const functionPrefix = 'function transformData(data)';
-    const functionSuffix = '}';
-
-    // 如果传入的是完整函数，则提取函数体
     const trimmedFunction = functionBody.trim();
-    const functionStartIndex = trimmedFunction.indexOf(functionPrefix);
-    const functionEndIndex = trimmedFunction.lastIndexOf(functionSuffix);
+
+    // 检查是否是完整的函数定义
+    const functionRegex = /^\s*function\s+transformData\s*\(\s*data\s*\)\s*\{([\s\S]*)\}\s*$/;
+    const match = trimmedFunction.match(functionRegex);
     
-    if (functionStartIndex !== -1 && functionEndIndex !== -1 && 
-        functionEndIndex > functionStartIndex + functionPrefix.length) {
-      // 提取函数体（去除函数声明和最后的大括号）
-      functionBody = trimmedFunction
-        .substring(functionStartIndex + functionPrefix.length, functionEndIndex)
-        .trim();
+    if (match) {
+      // 如果是完整的函数定义，提取函数体
+      functionBody = match[1].trim();
+    } else {
+      // 如果不是完整函数，假设输入的就是函数体
+      functionBody = trimmedFunction;
     }
 
     // 创建新函数并执行
@@ -59,20 +57,18 @@ export function validateTransformFunction(transformFunctionString: string): bool
   try {
     // 提取函数体
     let functionBody = transformFunctionString;
-    const functionPrefix = 'function transformData(data) {';
-    const functionSuffix = '}';
-
-    // 如果传入的是完整函数，则提取函数体
     const trimmedFunction = functionBody.trim();
-    const functionStartIndex = trimmedFunction.indexOf(functionPrefix);
-    const functionEndIndex = trimmedFunction.lastIndexOf(functionSuffix);
+
+    // 检查是否是完整的函数定义
+    const functionRegex = /^\s*function\s+transformData\s*\(\s*data\s*\)\s*\{([\s\S]*)\}\s*$/;
+    const match = trimmedFunction.match(functionRegex);
     
-    if (functionStartIndex !== -1 && functionEndIndex !== -1 && 
-        functionEndIndex > functionStartIndex + functionPrefix.length) {
-      // 提取函数体（去除函数声明和最后的大括号）
-      functionBody = trimmedFunction
-        .substring(functionStartIndex + functionPrefix.length, functionEndIndex)
-        .trim();
+    if (match) {
+      // 如果是完整的函数定义，提取函数体
+      functionBody = match[1].trim();
+    } else {
+      // 如果不是完整函数，假设输入的就是函数体
+      functionBody = trimmedFunction;
     }
 
     // 尝试创建函数但不执行，只检查语法
