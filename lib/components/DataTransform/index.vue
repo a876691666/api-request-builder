@@ -22,7 +22,7 @@ onMounted(() => {
 <style scoped>
 .monaco-editor-container {
   width: 100%;
-  height: calc(100% - 32px);
+  height: 100%;
 }
 
 .data-transform-container {

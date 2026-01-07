@@ -8,15 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@shikijs/langs':
-        specifier: ^3.4.0
-        version: 3.4.0
-      '@shikijs/themes':
-        specifier: ^3.4.0
-        version: 3.4.0
-      '@shikijs/types':
-        specifier: ^3.4.0
-        version: 3.4.0
       '@vueuse/core':
         specifier: ^13.1.0
         version: 13.1.0(vue@3.5.13(typescript@5.8.3))
@@ -29,19 +20,19 @@ importers:
       monaco-editor-core:
         specifier: ^0.52.2
         version: 0.52.2
-      shiki:
-        specifier: ^3.4.0
-        version: 3.4.0
       vue:
         specifier: ^3.5.13
         version: 3.5.13(typescript@5.8.3)
       vue-api-request-builder:
-        specifier: ^0.2.5
-        version: 0.2.5(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
+        specifier: ^0.2.10
+        version: 0.2.10(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3))
     devDependencies:
       '@types/node':
         specifier: ^20.0.0
         version: 20.17.43
+      '@types/prismjs':
+        specifier: ^1.26.5
+        version: 1.26.5
       '@unocss/preset-attributify':
         specifier: ^66.1.0
         version: 66.1.0
@@ -57,6 +48,12 @@ importers:
       '@vue/tsconfig':
         specifier: ^0.7.0
         version: 0.7.0(typescript@5.8.3)(vue@3.5.13(typescript@5.8.3))
+      codejar:
+        specifier: ^4.3.0
+        version: 4.3.0
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
       typescript:
         specifier: ~5.8.3
         version: 5.8.3
@@ -491,6 +488,9 @@ packages:
   '@types/node@20.17.43':
     resolution: {integrity: sha512-DnDEcDUnVAUYSa7U03QvrXbj1MZj00xoyi/a3lRGkR/c7BFUnqv+OY9EUphMqXUKdZJEOmuzu2mm+LmCisnPow==}
 
+  '@types/prismjs@1.26.5':
+    resolution: {integrity: sha512-AUZTa7hQ2KY5L7AmtSiqxlhWxb4ina0yd8hNbl4TWuqnv/pFP0nDMb3YrfSBf4hJVGLh2YEIBfKaBW/9UEl6IQ==}
+
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
@@ -759,6 +759,9 @@ packages:
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
+
+  codejar@4.3.0:
+    resolution: {integrity: sha512-A7BlrtD2oHR4xsABs/lLvDNxiPxkx71SuyHhcilBHbPMASpQs4d1AG2XjDSAm7y40RmfXbSGbMBhllGy//CDOA==}
 
   colorette@2.0.20:
     resolution: {integrity: sha512-IfEDxwoWIjkeXL1eXcDiow4UbKjhLdq6/EuSVR9GMN7KVH3r9gQ83e73hsz1Nd1T3ijd5xv1wcWRYO+D6kCI2w==}
@@ -1085,6 +1088,10 @@ packages:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
     engines: {node: ^10 || ^12 || >=14}
 
+  prismjs@1.30.0:
+    resolution: {integrity: sha512-DEvV2ZF2r2/63V+tK8hQvrR2ZGn10srHbXviTlcv7Kpzw8jWiNTqbVgjO3IY8RxrrOUF8VPMQQFysYYYv0YZxw==}
+    engines: {node: '>=6'}
+
   property-information@7.1.0:
     resolution: {integrity: sha512-TwEZ+X+yCJmYfL7TPUOcvBZ4QfoT5YenQiJuX//0th53DE6w0xxLEtfK3iyryQFddXuvkIk51EEgrJQ0WJkOmQ==}
 
@@ -1316,8 +1323,8 @@ packages:
   vscode-uri@3.1.0:
     resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
-  vue-api-request-builder@0.2.5:
-    resolution: {integrity: sha512-6MxOVJgRoefLcwR3WM2VmNs2OknVfzGpGA+7hwtbgtTK90exuxAIW65Ktj187zIRyAJqmHLX+1HbX+YGfDSW8w==}
+  vue-api-request-builder@0.2.10:
+    resolution: {integrity: sha512-7Jj3csWgAZUlfTeCboe/9rP9pIIpSDMzvS66MYsWt05YCvw4GO65yjcxjx/diG6kUqm8nQYqQyuNQH4DKKc/Lw==}
     peerDependencies:
       ant-design-vue: ^4.0.0
       vue: ^3.0.0
@@ -1707,6 +1714,8 @@ snapshots:
     dependencies:
       undici-types: 6.19.8
 
+  '@types/prismjs@1.26.5': {}
+
   '@types/unist@3.0.3': {}
 
   '@types/web-bluetooth@0.0.21': {}
@@ -2089,6 +2098,8 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  codejar@4.3.0: {}
+
   colorette@2.0.20: {}
 
   comma-separated-tokens@2.0.3: {}
@@ -2403,6 +2414,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  prismjs@1.30.0: {}
+
   property-information@7.1.0: {}
 
   punycode@2.3.1: {}
@@ -2649,10 +2662,16 @@ snapshots:
 
   vscode-uri@3.1.0: {}
 
-  vue-api-request-builder@0.2.5(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)):
+  vue-api-request-builder@0.2.10(ant-design-vue@4.2.6(vue@3.5.13(typescript@5.8.3)))(vue@3.5.13(typescript@5.8.3)):
     dependencies:
+      '@shikijs/langs': 3.4.0
+      '@shikijs/themes': 3.4.0
+      '@shikijs/types': 3.4.0
+      '@vueuse/core': 13.1.0(vue@3.5.13(typescript@5.8.3))
       ant-design-vue: 4.2.6(vue@3.5.13(typescript@5.8.3))
       monaco-editor: 0.52.2
+      monaco-editor-core: 0.52.2
+      shiki: 3.4.0
       vue: 3.5.13(typescript@5.8.3)
 
   vue-flow-layout@0.1.1(vue@3.5.13(typescript@5.8.3)):

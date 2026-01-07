@@ -38,7 +38,7 @@ watch(
 );
 
 const transformFunctionString = ref(`function transformData(data) {
-return data.results.map(item => item.name); 
+  return data.results.map(item => item.name); 
 }`);
 
 // 示例数据

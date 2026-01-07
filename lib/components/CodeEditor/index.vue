@@ -1,90 +1,98 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from "vue";
-import { createHighlighterCore } from "shiki/core";
-import githubDark from "@shikijs/themes/github-dark";
-import typescript from "@shikijs/langs/typescript";
-import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
+import { onMounted, onUnmounted, ref, watch } from "vue";
+import { CodeJar } from "codejar";
+import * as Prism from "prismjs";
+import "prismjs/components/prism-javascript";
+import "prismjs/themes/prism-tomorrow.css";
 
 const modelValue = defineModel<string>("modelValue", { default: "" });
-const output = ref("<pre></pre>");
-const preStyle = ref("");
-const isLoading = ref(true);
+const editorRef = ref<HTMLElement>();
+let jar: CodeJar | null = null;
+let isInternalUpdate = false;
 
-// 初始化高亮器
-(async () => {
-  if (typeof window !== "undefined") {
-    const highlighter = await createHighlighterCore({
-      themes: [githubDark],
-      langs: [typescript],
-      engine: createJavaScriptRegexEngine(),
+// 高亮函数
+const highlight = (editor: HTMLElement) => {
+  const code = editor.textContent || "";
+  editor.innerHTML = Prism.highlight(code, Prism.languages.javascript, "javascript");
+};
+
+onMounted(() => {
+  if (editorRef.value) {
+    jar = CodeJar(editorRef.value, highlight, {
+      tab: "  ",
+      indentOn: /[({[]$/,
+      catchTab: true,
+      preserveIdent: true,
+      addClosing: true,
+      history: true,
     });
 
-    watch(modelValue, run, { immediate: true });
+    // 设置初始值
+    jar.updateCode(modelValue.value);
 
-    function run(): void {
-      output.value = highlighter.codeToHtml(modelValue.value, {
-        lang: "typescript",
-        theme: "github-dark",
-        transformers: [
-          {
-            preprocess(code) {
-              if (code.endsWith("\n")) return `${code}\n`;
-            },
-            pre(node) {
-              this.addClassToHast(node, "vp-code");
-              preStyle.value = (node.properties?.style as string) || "";
-            },
-          },
-        ],
-      });
-      isLoading.value = false;
-    }
+    // 监听编辑器变化
+    jar.onUpdate((code) => {
+      if (code !== modelValue.value) {
+        isInternalUpdate = true;
+        modelValue.value = code;
+      }
+    });
   }
-})();
+});
 
-const textAreaRef = ref<HTMLDivElement>();
-const highlightContainerRef = ref<HTMLSpanElement>();
+// 监听外部值变化
+watch(modelValue, (newValue) => {
+  if (isInternalUpdate) {
+    isInternalUpdate = false;
+    return;
+  }
+  if (jar && newValue !== jar.toString()) {
+    jar.updateCode(newValue);
+  }
+});
 
-function syncScroll() {
-  if (!highlightContainerRef.value || !textAreaRef.value) return;
-  const preEl = highlightContainerRef.value.children[0] as HTMLPreElement;
-  if (!preEl) return;
-  preEl.scrollLeft = textAreaRef.value.scrollLeft;
-}
-
-function onInput() {
-  nextTick().then(() => {
-    syncScroll();
-  });
-}
+onUnmounted(() => {
+  jar?.destroy();
+  jar = null;
+});
 </script>
 
 <template>
-  <div
-    class="language-ts vp-adaptive-theme transition-none! mini-playground shadow h-full overflow-y-auto overflow-x-hidden"
-    :style="[preStyle]"
-  >
-    <div class="relative float-left min-w-full">
-      <div ref="highlightContainerRef" v-html="output" class="h-full" />
-      <textarea
-        ref="textAreaRef"
-        v-model="modelValue"
-        class="whitespace-pre p-0 border-none outline-none overflow-hidden w-full h-full font-mono bg-transparent absolute inset-0 text-transparent caret-gray tab-4 resize-none z-10 line-height-$vp-code-line-height font-$vp-font-family-mono text-size-$vp-code-font-size"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        @input="onInput"
-        @scroll="syncScroll"
-      />
-    </div>
+  <div class="mini-playground shadow h-full overflow-auto">
+    <pre
+      ref="editorRef"
+      class="code-editor language-javascript"
+      style="margin: 0"
+    ><code>{{ modelValue }}</code></pre>
   </div>
 </template>
 
 <style>
-.shiki {
+.code-editor {
   margin: 0;
+  padding: 12px;
+  font-family: "Fira Code", "Consolas", "Monaco", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  background: #1d1f21;
+  color: #c5c8c6;
+  border-radius: 4px;
+  min-height: 100%;
+  box-sizing: border-box;
+  outline: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
+
+.code-editor:focus {
+  outline: none;
+}
+
+.mini-playground {
+  background: #1d1f21;
+}
+
 .mini-playground select {
   background: transparent;
   color: inherit;
@@ -92,15 +100,8 @@ function onInput() {
   padding: 0px !important;
   position: relative;
 }
+
 .mini-playground select:focus {
   outline: none;
-}
-
-.mini-playground select:before {
-  content: "";
-  position: absolute;
-  width: 1em;
-  height: 1em;
-  background: red;
 }
 </style>
